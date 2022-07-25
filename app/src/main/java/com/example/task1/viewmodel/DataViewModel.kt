@@ -74,6 +74,7 @@ class DataViewModel(applicationContext: Context) : ViewModel() {
         private set
 
     fun getMovieInfo(movieId: String) {
+        getFavMovies()
         viewModelScope.launch {
             MovieInfo = ApiService.getMovieInfo(movieId)
         }

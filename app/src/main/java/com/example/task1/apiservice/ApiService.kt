@@ -30,15 +30,15 @@ object ApiService {
             connectTimeoutMillis = 5000L
             socketTimeoutMillis = 5000L
         }
-        /*HttpResponseValidator {
-            validateResponse { response ->
-                var code = response.status.value
-                var des = response.status.description
-                if (code in 300..599) {
-                    Log.d("httpvalidator 123", "$code : $des")
-                }
+        install(HttpRequestRetry) {
+            retryOnExceptionIf(maxRetries = 5) { request, cause ->
+                cause is HttpRequestTimeoutException
+
             }
-        }*/
+            delayMillis { retry ->
+                retry * 500L
+            } // retries in 3, 6, 9, etc. seconds
+        }
         install(ContentNegotiation) {
             var converter = KotlinxSerializationConverter(Json {
                 prettyPrint = true
